@@ -1,12 +1,14 @@
-package isengard;
+package isengard.io;
+
+import isengard.db.Adapter;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Button extends JButton {
+public class BackupButton extends JButton {
 
-    public Button() {
+    public BackupButton() {
         initButton();
     }
 
@@ -17,6 +19,7 @@ public class Button extends JButton {
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Adapter.backup();
                 System.out.println("Backup button has been clicked");
             }
         });

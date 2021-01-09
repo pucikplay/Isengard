@@ -1,6 +1,5 @@
-package isengard;
+package isengard.io;
 
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 

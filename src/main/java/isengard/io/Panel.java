@@ -1,4 +1,4 @@
-package isengard;
+package isengard.io;
 
 import javax.swing.*;
 import java.awt.*;
