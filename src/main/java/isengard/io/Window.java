@@ -1,11 +1,8 @@
 package isengard.io;
 
-import isengard.db.Adapter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Window extends JFrame{
 
@@ -32,7 +29,7 @@ public class Window extends JFrame{
         this.panel = new Panel(windowSide);
         this.add(panel);
 
-        initLogin();
+        initButtons();
 
         this.setVisible(true);
 
@@ -43,32 +40,6 @@ public class Window extends JFrame{
         panel.add(button);
     }
 
-    private void initLogin() {
-        final Login login = new Login();
-        panel.add(login.loginLabel);
-        panel.add(login.passwordLabel);
-        panel.add(login.errorLabel);
-        panel.add(login.loginText);
-        panel.add(login.passwordText);
-        login.loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String log = login.loginText.getText();
-                String pass = login.passwordText.getText();
-                if(Adapter.login(log, pass)) {
-                    panel.remove(login.loginLabel);
-                    panel.remove(login.passwordLabel);
-                    panel.remove(login.errorLabel);
-                    panel.remove(login.loginText);
-                    panel.remove(login.passwordText);
-                    panel.remove(login.loginButton);
-                    panel.repaint();
-                }
-                else {
-                    login.errorLabel.setText("Wrong credentials");
-                }
-            }
-        });
-        panel.add(login.loginButton);
-    }
+
 
 }

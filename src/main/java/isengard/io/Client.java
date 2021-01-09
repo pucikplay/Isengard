@@ -5,21 +5,23 @@ import java.awt.event.WindowEvent;
 
 public class Client {
 
-    private final Window window;
+    private final LoginWindow loginWindow;
+    private Window window;
 
     public Client() {
 
-        this.window = new Window();
+        this.loginWindow = new LoginWindow();
         addWindowListener();
-        window.setVisible(true);
+        loginWindow.setVisible(true);
 
     }
 
     private void addWindowListener() {
-        window.addWindowListener(new WindowAdapter() {
+        loginWindow.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent event) {
-                System.out.println("I'm closing.");
+            public void windowClosed(WindowEvent event) {
+                System.out.println("I'm closed.");
+                window = new Window();
             }
         });
     }

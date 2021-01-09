@@ -16,12 +16,12 @@ public class Login {
     public Button loginButton = new Button("Login");
 
     public Login() {
-        loginLabel.setBounds(100, 100, 100, 20);
-        passwordLabel.setBounds(100, 200, 100, 20);
-        errorLabel.setBounds(100, 300, 100, 20);
-        loginText.setBounds(220, 100, 200, 20);
-        passwordText.setBounds(220, 200, 200, 20);
-        loginButton.setBounds(655, 850, 150, 60);
+        loginLabel.setBounds(20, 20, 80, 20);
+        passwordLabel.setBounds(20, 50, 80, 20);
+        errorLabel.setBounds(20, 80, 50, 20);
+        loginText.setBounds(100, 20, 100, 20);
+        passwordText.setBounds(100, 50, 100, 20);
+        loginButton.setBounds(100, 150, 60, 30);
         passwordText.setEchoChar('*');
     }
 
