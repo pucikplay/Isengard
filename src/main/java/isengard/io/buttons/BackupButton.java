@@ -1,4 +1,4 @@
-package isengard.io;
+package isengard.io.buttons;
 
 import isengard.db.Adapter;
 
@@ -9,12 +9,7 @@ import java.awt.event.ActionListener;
 public class BackupButton extends JButton {
 
     public BackupButton() {
-        initButton();
-    }
-
-    private void initButton() {
         this.setText("Backup");
-        this.setBounds(655, 850, 150, 60);
 
         this.addActionListener(new ActionListener() {
             @Override
@@ -24,4 +19,5 @@ public class BackupButton extends JButton {
             }
         });
     }
+
 }

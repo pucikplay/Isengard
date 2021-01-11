@@ -1,14 +1,21 @@
 package isengard.io;
 
 
+import isengard.db.Adapter;
+import isengard.io.buttons.BackupButton;
+import isengard.io.buttons.CartButton;
+import isengard.io.buttons.SearchButton;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class Window extends JFrame{
 
-    private Panel panel;
+    private JPanel panel;
 
-    private final int windowSide = 1000;
+    private Dimension pSize = new Dimension(300, 150);
+
+    private final int role = -1;
 
     public Window() {
         initUI();
@@ -17,27 +24,36 @@ public class Window extends JFrame{
 
     private void initUI() {
         setTitle("Isengard client");
-        setSize(new Dimension(windowSide, windowSide));
-        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        init(windowSide);
+        init();
     }
 
-    public void init(int windowSide) {
+    public void init() {
 
-        this.panel = new Panel(windowSide);
+        this.panel = new JPanel();
+        panel.setLayout(new FlowLayout());
+        this.setPreferredSize(pSize);
+        this.setMinimumSize(pSize);
         this.add(panel);
 
-        initButtons();
+        initButtons(Adapter.getRole());
 
         this.setVisible(true);
 
     }
 
-    private void initButtons() {
-        Button button = new Button();
-        panel.add(button);
+    private void initButtons(int role) {
+
+        CartButton cartButton = new CartButton();
+        SearchButton searchButton = new SearchButton();
+        panel.add(cartButton);
+        panel.add(searchButton);
+
+        if (role == 2) {
+            BackupButton backupButton = new BackupButton();
+            panel.add(backupButton);
+        }
     }
 
 

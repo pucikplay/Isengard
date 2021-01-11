@@ -1,5 +1,7 @@
 package isengard.io;
 
+import isengard.db.Adapter;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 

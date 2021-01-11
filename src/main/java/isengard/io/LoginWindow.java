@@ -9,9 +9,15 @@ import java.awt.event.ActionListener;
 
 public class LoginWindow extends JFrame{
 
-    private Panel panel;
-
-    private final int windowSide = 250;
+    private JPanel panel;
+    private Dimension pSize = new Dimension(300, 150);
+    public Label loginLabel = new Label("Login: ");
+    public Label passwordLabel = new Label("Password: ");
+    public Label errorLabel = new Label("Error: ");
+    public final TextField loginText = new TextField(6);
+    public final TextField passwordText = new TextField(6);
+    public Button loginButton = new Button("Login");
+    public Button registerButton = new Button("Register");
 
     public LoginWindow() {
         initUI();
@@ -19,16 +25,17 @@ public class LoginWindow extends JFrame{
 
     private void initUI() {
         setTitle("Login window");
-        setSize(new Dimension(windowSide, windowSide));
-        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        init(windowSide);
+        init();
     }
 
-    public void init(int windowSide) {
+    public void init() {
 
-        this.panel = new Panel(windowSide);
+        this.panel = new JPanel();
+        panel.setLayout(new GridLayout(0,2));
+        this.setPreferredSize(pSize);
+        this.setMinimumSize(pSize);
         this.add(panel);
 
         initLogin();
@@ -38,24 +45,25 @@ public class LoginWindow extends JFrame{
     }
 
     private void initLogin() {
-        final Login login = new Login();
-        panel.add(login.loginLabel);
-        panel.add(login.passwordLabel);
-        panel.add(login.errorLabel);
-        panel.add(login.loginText);
-        panel.add(login.passwordText);
-        login.loginButton.addActionListener(new ActionListener() {
+        panel.add(loginLabel);
+        panel.add(loginText);
+        panel.add(passwordLabel);
+        panel.add(passwordText);
+        passwordText.setEchoChar('*');
+        panel.add(errorLabel);
+        loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String log = login.loginText.getText();
-                String pass = login.passwordText.getText();
+                String log = loginText.getText();
+                String pass = passwordText.getText();
                 if(Adapter.login(log, pass)) {
                     dispose();
                 }
                 else {
-                    login.errorLabel.setText("Wrong credentials");
+                    errorLabel.setText("Wrong credentials");
                 }
             }
         });
-        panel.add(login.loginButton);
+        panel.add(loginButton);
+        panel.add(registerButton);
     }
 }

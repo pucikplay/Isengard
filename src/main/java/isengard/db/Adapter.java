@@ -1,10 +1,21 @@
 package isengard.db;
 
 public class Adapter {
-    public static void backup() {
-    }
+
+    private static int role;
 
     public static boolean login(String login, String pass) {
-        return false;
+        role = 0;
+        return true;
     }
+
+    public static int getRole() {
+        return role;
+    }
+
+    public static void backup() {
+
+    }
+
+
 }
