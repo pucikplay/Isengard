@@ -17,8 +17,8 @@ public class BookPanel extends JPanel{
   public Button button;
   public Label rating;
   
-  public BookPanel() {
-    initPanel();
+  public BookPanel(boolean showDetailsButton) {
+    initPanel(showDetailsButton);
   }
   
   public void setData(String name,String author,String rating) {
@@ -27,7 +27,7 @@ public class BookPanel extends JPanel{
     this.rating.setText(rating);
   }
   
-  private void initPanel() {
+  private void initPanel(boolean showDetailsButton) {
     this.setLayout(new BorderLayout());
     this.setBorder(BorderFactory.createLineBorder(Color.black,4));
     //Nazwa
@@ -38,10 +38,13 @@ public class BookPanel extends JPanel{
     author = new Label("Autor ksiazki");
     author.setFont(new Font("Verdana", Font.PLAIN, 15));
     this.add(author, BorderLayout.LINE_START);
-    //Autor
-    button = new Button("Obejrzyj");
-    button.setFont(new Font("Verdana", Font.PLAIN, 15));
-    this.add(button, BorderLayout.LINE_END);
+    //Przycisk
+    //Trzeba zmienic na zewnetrzny przekierowywujacy 
+    if(showDetailsButton) {
+      button = new Button("Obejrzyj");
+      button.setFont(new Font("Verdana", Font.PLAIN, 15));
+      this.add(button, BorderLayout.LINE_END);
+    }
     //Autor
     rating = new Label("Ocenka może byc/git");
     rating.setFont(new Font("Verdana", Font.PLAIN, 15));
