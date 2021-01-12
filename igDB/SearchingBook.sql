@@ -42,11 +42,10 @@ BEGIN
 		SELECT tytul,cena,ilosc,imie,nazwisko,nazwa,AVG(iloscgwiazdek) AS sredniaOcena FROM ksiazki
 		JOIN autorzy
 		JOIN kategorie
-		JOIN recenzje
+		LEFT JOIN recenzje ON ksiazki.id=recenzje.id_ksiazka
 		WHERE 
 		autorzy.id = ksiazki.autor AND
 		kategorie.id = ksiazki.kategoria AND
-		recenzje.id_ksiazka = ksiazki.id AND
 		tytul LIKE CONCAT("%",?,"%") AND
 		kategorie.nazwa LIKE CONCAT("%",?,"%")AND
 		CONCAT(autorzy.imie," ",autorzy.nazwisko) LIKE CONCAT("%",?,"%")
