@@ -1,12 +1,34 @@
 package isengard.db;
 
+import java.sql.*;
+
 public class Adapter {
 
     private static int role;
 
-    public static boolean login(String login, String pass) {
-        role = 0;
-        return true;
+    static Connection connection;
+
+    static {
+        try {
+            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", "guest", "pass");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static boolean login(String login, String pass) throws SQLException {
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery("SELECT nazwa, haslo, rola FROM uzytkownicy");
+        while (rs.next()) {
+            if (rs.getString(1).equals(login)) {
+                if (rs.getString(2).equals(pass)) {
+                    role = rs.getInt(3);
+                    connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", login, pass);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static int getRole() {
@@ -18,4 +40,36 @@ public class Adapter {
     }
 
 
+    public static boolean register(String log, String pass) throws SQLException {
+        connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", "root", "root");
+        if (log.matches("[a-zA-Z0-9]+") && pass.matches("[a-zA-Z0-9]+")) {
+
+            Statement statement1 = connection.createStatement();
+            ResultSet rs = statement1.executeQuery("SELECT nazwa FROM uzytkownicy");
+            while (rs.next()) {
+                if (rs.getString(1).equals(log)) {
+                    return false;
+                }
+            }
+
+            PreparedStatement statement = connection.prepareStatement("CREATE USER ? IDENTIFIED BY ?;");
+            statement.setString(1, log);
+            statement.setString(2, pass);
+            statement.executeQuery();
+
+            statement = connection.prepareStatement("GRANT user TO ?;");
+            statement.setString(1, log);
+            statement.executeQuery();
+
+            statement = connection.prepareStatement("INSERT INTO uzytkownicy (nazwa,haslo,rola,stanKonta) VALUES (?,?,0,0)");
+            statement.setString(1, log);
+            statement.setString(2, pass);
+            statement.executeQuery();
+
+            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", "guest", "pass");
+            System.out.println("User registered");
+            return true;
+        }
+        else return false;
+    }
 }

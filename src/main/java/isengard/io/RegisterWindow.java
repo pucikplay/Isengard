@@ -8,20 +8,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
-public class LoginWindow extends JFrame{
+public class RegisterWindow extends JFrame {
 
     private JPanel panel;
-    private Dimension pSize = new Dimension(300, 150);
+    private Dimension pSize = new Dimension(400, 150);
     public Label loginLabel = new Label("Login: ");
     public Label passwordLabel = new Label("Password: ");
+    public Label repeatPasswordLabel = new Label("Repeat password: ");
     public Label errorLabel = new Label();
     public final TextField loginText = new TextField();
     public final TextField passwordText = new TextField();
-    public Button loginButton = new Button("Login");
+    public final TextField repeatPasswordText = new TextField();
     public Button registerButton = new Button("Register");
 
-    public LoginWindow() {
-        setTitle("Login window");
+    public RegisterWindow() {
+        setTitle("Register window");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         init();
@@ -35,41 +36,47 @@ public class LoginWindow extends JFrame{
         this.setMinimumSize(pSize);
         this.add(panel);
 
-        initLogin();
+        initRegister();
 
         this.setVisible(true);
 
     }
 
-    private void initLogin() {
+    private void initRegister() {
         panel.add(loginLabel);
         panel.add(loginText);
         panel.add(passwordLabel);
         panel.add(passwordText);
+        panel.add(repeatPasswordLabel);
+        panel.add(repeatPasswordText);
         passwordText.setEchoChar('*');
+        repeatPasswordText.setEchoChar('*');
         panel.add(errorLabel);
-        loginButton.addActionListener(new ActionListener() {
+        registerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String log = loginText.getText();
                 String pass = passwordText.getText();
-                try {
-                    if(Adapter.login(log, pass)) {
-                        dispose();
+                String rPass = repeatPasswordText.getText();
+                if(log.equals("") || pass.equals("")) {
+                    errorLabel.setText("Fields cannot be empty");
+                }
+                else if(!pass.equals(rPass)) {
+                    errorLabel.setText("Repeated password is different");
+                }
+                else {
+                    try {
+                        if (Adapter.register(log, pass)) {
+                            dispose();
+                        }
+                        else {
+                            errorLabel.setText("Registration failed");
+                        }
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
                     }
-                    else {
-                        errorLabel.setText("Wrong credentials");
-                    }
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
                 }
             }
         });
-        panel.add(loginButton);
         panel.add(registerButton);
-        registerButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                new RegisterWindow();
-            }
-        });
     }
 }
