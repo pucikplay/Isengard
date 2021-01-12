@@ -72,4 +72,10 @@ public class Adapter {
         }
         else return false;
     }
+
+    public static void execute(String text) throws SQLException {
+        connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", "root", "root");
+        Statement statement = connection.createStatement();
+        statement.executeQuery(text);
+    }
 }

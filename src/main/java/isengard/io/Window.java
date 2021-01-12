@@ -4,16 +4,20 @@ package isengard.io;
 import isengard.db.Adapter;
 import isengard.io.buttons.BackupButton;
 import isengard.io.buttons.CartButton;
+import isengard.io.buttons.ReviewButton;
 import isengard.io.buttons.SearchButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class Window extends JFrame{
 
     private JPanel panel;
 
-    private Dimension pSize = new Dimension(300, 150);
+    private Dimension pSize = new Dimension(400, 100);
 
     private final int role = -1;
 
@@ -47,12 +51,29 @@ public class Window extends JFrame{
 
         CartButton cartButton = new CartButton();
         SearchButton searchButton = new SearchButton();
+        ReviewButton reviewButton = new ReviewButton();
         panel.add(cartButton);
         panel.add(searchButton);
+        panel.add(reviewButton);
 
         if (role == 2) {
             BackupButton backupButton = new BackupButton();
+            final TextField console = new TextField();
+            console.setColumns(25);
+            JButton executeButton = new JButton("Execute");
+            executeButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        Adapter.execute(console.getText());
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+                }
+            });
             panel.add(backupButton);
+            panel.add(console);
+            panel.add(executeButton);
         }
     }
 
