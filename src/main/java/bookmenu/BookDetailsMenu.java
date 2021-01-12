@@ -22,6 +22,7 @@ public class BookDetailsMenu extends JPanel{
   public JScrollPane scrollablePanel;
   JTextField reviewText;
   Button publishReviewButton;
+  Button addToCart;
   /*
    * Przyjmuje id książki, i sam wyciąga z baz danych potrzebne informacje tj. nazwa i recenzje
    */
@@ -44,7 +45,15 @@ public class BookDetailsMenu extends JPanel{
     this.add(bookPanel, BorderLayout.PAGE_START);
     //Do dodania do koszyka
     //Trzeba rozszerzyc
-    bookPanel.add(new Button("Dodaj do koszyka"), BorderLayout.EAST);
+    addToCart = new Button("Dodaj do koszyka");
+    addToCart.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+          System.out.println("Add to cart button has been clicked");
+          //Dodaj do koszyka id ksiazki
+      }
+    });
+    bookPanel.add(addToCart, BorderLayout.EAST);
     
     //Panel na recenzje
     JPanel pom = new JPanel();
