@@ -51,8 +51,8 @@ public class BookPanel extends JPanel{
       button.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Obejrzyj button clicked, id = " + Integer.toString(bookDBid));
-            //Dodaj do koszyka id ksiazki
+            System.out.println("Kliknięto i teraz trzeba pokazac menu z ta ksiazka"+bookDBid);
+            //Wyswietl BookDetailsMenu(id)
         }
       });
     }

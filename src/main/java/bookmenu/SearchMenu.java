@@ -111,8 +111,8 @@ public class SearchMenu extends JPanel{
     }
   }
   
-  public void addBook(String name,String author,String rating) {
-    BookPanel test = new BookPanel(0,true);
+  public void addBook(int id,String name,String author,String rating) {
+    BookPanel test = new BookPanel(id,true);
     
     test.setPreferredSize(pSize);
     test.setMinimumSize(pSize);
@@ -141,17 +141,11 @@ public class SearchMenu extends JPanel{
     /*
      * Delete
      */
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
-    this.addBook("a","a","a");
+    this.addBook(0,"a","a","a");
+    this.addBook(1,"a","a","a");
+    this.addBook(2,"a","a","a");
+    this.addBook(3,"a","a","a");
+    this.addBook(4,"a","a","a");
     /*
      * Zapytanie do bazy o książki spełniające kryteria wpisane w SearchPanel
      * a następnie iterując się dodajemy do metodą addBook
@@ -164,7 +158,7 @@ public class SearchMenu extends JPanel{
    */
   private void generateList() {
     for(int i=0;i<25;i++) {
-      BookPanel test = new BookPanel(0,true);
+      BookPanel test = new BookPanel(i,true);
       
       test.setPreferredSize(pSize);
       test.setMinimumSize(pSize);
