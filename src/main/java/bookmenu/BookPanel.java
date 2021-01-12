@@ -6,18 +6,22 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Label;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 public class BookPanel extends JPanel{
 
+  public int bookDBid;
   public Label name;
   public Label author;
   public Button button;
   public Label rating;
   
-  public BookPanel(boolean showDetailsButton) {
+  public BookPanel(int id,boolean showDetailsButton) {
+    this.bookDBid = id;
     initPanel(showDetailsButton);
   }
   
@@ -44,6 +48,13 @@ public class BookPanel extends JPanel{
       button = new Button("Obejrzyj");
       button.setFont(new Font("Verdana", Font.PLAIN, 15));
       this.add(button, BorderLayout.LINE_END);
+      button.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Obejrzyj button clicked, id = " + Integer.toString(bookDBid));
+            //Dodaj do koszyka id ksiazki
+        }
+      });
     }
     //Autor
     rating = new Label("Ocenka może byc/git");

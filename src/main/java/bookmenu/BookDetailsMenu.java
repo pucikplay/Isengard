@@ -34,7 +34,7 @@ public class BookDetailsMenu extends JPanel{
   private void initBookPanel() {
     this.setLayout(new BorderLayout());
     //Create book panel
-    bookPanel = new BookPanel(false);
+    bookPanel = new BookPanel(id,false);
     bookPanel.setVisible(true);
     
     setBookInfo(id);

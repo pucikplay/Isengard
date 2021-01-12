@@ -112,7 +112,7 @@ public class SearchMenu extends JPanel{
   }
   
   public void addBook(String name,String author,String rating) {
-    BookPanel test = new BookPanel(true);
+    BookPanel test = new BookPanel(0,true);
     
     test.setPreferredSize(pSize);
     test.setMinimumSize(pSize);
@@ -164,7 +164,7 @@ public class SearchMenu extends JPanel{
    */
   private void generateList() {
     for(int i=0;i<25;i++) {
-      BookPanel test = new BookPanel(true);
+      BookPanel test = new BookPanel(0,true);
       
       test.setPreferredSize(pSize);
       test.setMinimumSize(pSize);
