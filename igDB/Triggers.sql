@@ -16,13 +16,6 @@ CREATE TRIGGER usun_ksiazka_recenzja
 	FOR EACH ROW
 DELETE FROM recenzje WHERE recenzje.id_ksiazka=OLD.id;
 
-#usuwanie produktow zamowien z ta ksiazka
-DROP TRIGGER IF EXISTS usun_ksiazka_produkt;
-CREATE TRIGGER usun_ksiazka_produkt
-	BEFORE DELETE ON ksiazki
-	FOR EACH ROW
-DELETE FROM produktyzamowien WHERE produktyzamowien.id_ksiazka=OLD.id;
-
 ###Triggery przed usunięciem użytkownika
 
 #usuwanie recenzji
