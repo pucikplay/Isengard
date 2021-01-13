@@ -39,7 +39,7 @@ public class BookDetailsMenu extends JPanel{
     
     setBookInfo(id);
     
-    bookPanel.setBackground(Color.red);
+    bookPanel.setBackground(new Color(159,155,119));
     bookPanel.setPreferredSize(pSize);
     bookPanel.setMinimumSize(pSize);
     this.add(bookPanel, BorderLayout.PAGE_START);
@@ -64,7 +64,7 @@ public class BookDetailsMenu extends JPanel{
     publishReviewButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-          System.out.println("Search button has been clicked");
+          System.out.println("Publish review button has been clicked");
           //Dodaj do bazy danych recenzje (jesli spelnia wymagania dot ilosci znakow)
           //To do
           //Odswiez recenzje

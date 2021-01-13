@@ -74,7 +74,7 @@ public class SearchMenu extends JPanel{
     public SearchPanel() {
       
       this.setVisible(true);
-      this.setBackground(Color.GRAY);
+      this.setBackground(new Color(159,155,119));
       this.setLayout(new FlowLayout());
       this.setPreferredSize(pSize);
       this.setMinimumSize(pSize);
