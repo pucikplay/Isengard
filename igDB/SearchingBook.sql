@@ -39,7 +39,7 @@ BEGIN
 	#SELECT
 	CONCAT(
 	'
-		SELECT tytul,cena,ilosc,imie,nazwisko,nazwa,AVG(iloscgwiazdek) AS sredniaOcena FROM ksiazki
+		SELECT ksiazki.id,tytul,cena,ilosc,imie,nazwisko,nazwa,AVG(iloscgwiazdek) AS sredniaOcena,kategorie.nazwa as kategoria FROM ksiazki
 		JOIN autorzy
 		JOIN kategorie
 		LEFT JOIN recenzje ON ksiazki.id=recenzje.id_ksiazka
