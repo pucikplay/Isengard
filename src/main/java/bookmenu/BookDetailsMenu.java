@@ -82,10 +82,11 @@ public class BookDetailsMenu extends JPanel{
       private void publishReview() {
         try {
           int iduzytkownika = 1; //TRZEBA ZMIENIC
-          System.out.println("INSERT INTO recenzje VALUES ("+Integer.toString(iduzytkownika)+","+Integer.toString(id)+","+Integer.parseInt(reviewScore.getText())+",'"+reviewText.getText()+"')");
-          Adapter.execute("INSERT INTO recenzje VALUES ("+Integer.toString(iduzytkownika)+","+Integer.toString(id)+","+Integer.parseInt(reviewScore.getText())+",'"+reviewText.getText()+"')");
+          System.out.println("INSERT INTO recenzje VALUES ("+Integer.toString(id)+","+Integer.toString(iduzytkownika)+","+Integer.parseInt(reviewScore.getText())+",'"+reviewText.getText()+"')");
+          Adapter.execute("INSERT INTO recenzje VALUES ("+Integer.toString(id)+","+Integer.toString(iduzytkownika)+","+Integer.parseInt(reviewScore.getText())+",'"+reviewText.getText()+"')");
+          reviewReturn.setText("Pomyslnie dodano recenzje");
         } catch (Exception e) {
-          reviewReturn.setText("Sprawdz konsole bo jakis blad");
+          reviewReturn.setText("Wprowadz poprawne dane");
           e.printStackTrace();
         }
         
@@ -157,7 +158,7 @@ public class BookDetailsMenu extends JPanel{
       " JOIN uzytkownicy" +
       " LEFT JOIN recenzje ON ksiazki.id=recenzje.id_ksiazka" +
       " WHERE " +
-      " ksiazki.id =" + id +
+      " ksiazki.id=" + id +
       " AND id_uzytkownik=uzytkownicy.id"
       );
       // :)
