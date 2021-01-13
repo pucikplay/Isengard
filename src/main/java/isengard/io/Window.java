@@ -54,7 +54,7 @@ public class Window extends JFrame{
         ReviewButton reviewButton = new ReviewButton();
         panel.add(cartButton);
         panel.add(searchButton);
-        panel.add(reviewButton);
+        //panel.add(reviewButton);
 
         if (role == 2) {
             BackupButton backupButton = new BackupButton();

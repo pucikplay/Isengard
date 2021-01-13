@@ -1,5 +1,7 @@
 package bookmenu;
 
+import isengard.db.Adapter;
+
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
@@ -140,7 +142,7 @@ public class BookDetailsMenu extends JPanel{
    */
   private void generateList() {
     for(int i=0;i<25;i++) {
-        ReviewPanel test = new ReviewPanel(this,true);
+        ReviewPanel test = new ReviewPanel(this, Adapter.getRole() > 0);
         test.setData("Wojciech Maziarz", "Git polecam każdemu", "5");
         
         test.setPreferredSize(pSize);

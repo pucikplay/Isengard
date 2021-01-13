@@ -23,6 +23,7 @@ public class Adapter {
             if (rs.getString(1).equals(login)) {
                 if (rs.getString(2).equals(pass)) {
                     role = rs.getInt(3);
+                    System.out.println(role);
                     connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", login, pass);
                     return true;
                 }
@@ -57,7 +58,12 @@ public class Adapter {
             statement.setString(2, pass);
             statement.executeQuery();
 
-            statement = connection.prepareStatement("GRANT user TO ?;");
+
+            statement = connection.prepareStatement("GRANT SELECT ON isengardbookdb.* TO ?;");
+            statement.setString(1, log);
+            statement.executeQuery();
+
+            statement = connection.prepareStatement("GRANT UPDATE ON isengardbookdb.recenzje TO ?;");
             statement.setString(1, log);
             statement.executeQuery();
 

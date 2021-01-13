@@ -1,5 +1,7 @@
 package bookmenu;
 
+import isengard.db.Adapter;
+
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
@@ -112,7 +114,7 @@ public class SearchMenu extends JPanel{
   }
   
   public void addBook(int id,String name,String author,String rating) {
-    BookPanel test = new BookPanel(id,true);
+    BookPanel test = new BookPanel(id, true);
     
     test.setPreferredSize(pSize);
     test.setMinimumSize(pSize);

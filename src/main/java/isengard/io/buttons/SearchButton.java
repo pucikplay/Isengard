@@ -1,6 +1,8 @@
 package isengard.io.buttons;
 
+import bookmenu.SearchMenu;
 import isengard.db.Adapter;
+import isengard.io.NewWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,7 +16,7 @@ public class SearchButton extends JButton {
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //open search menu
+                new NewWindow(new SearchMenu(), "Search Menu");
                 System.out.println("Search button has been clicked");
             }
         });

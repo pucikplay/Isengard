@@ -1,5 +1,7 @@
 package bookmenu;
 
+import isengard.io.NewWindow;
+
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
@@ -52,7 +54,7 @@ public class BookPanel extends JPanel{
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Kliknięto i teraz trzeba pokazac menu z ta ksiazka"+bookDBid);
-            //Wyswietl BookDetailsMenu(id)
+            new NewWindow(new BookDetailsMenu(bookDBid), "Book Details");
         }
       });
     }

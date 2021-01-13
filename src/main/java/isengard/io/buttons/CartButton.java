@@ -1,6 +1,8 @@
 package isengard.io.buttons;
 
+import bookmenu.CartMenu;
 import isengard.db.Adapter;
+import isengard.io.NewWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,7 +16,7 @@ public class CartButton extends JButton {
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //open cart widow
+                new NewWindow(new CartMenu(), "Cart");
                 System.out.println("Cart button has been clicked");
             }
         });
