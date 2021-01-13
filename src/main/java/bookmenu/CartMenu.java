@@ -100,7 +100,7 @@ public class CartMenu extends JPanel{
   private void generateList() {
     for(int i=0;i<5;i++) {
         BookPanel test = new BookPanel(i,true);
-        test.setData("Adam madA", "Mgła we mgle", "średnia ocen 5/5");
+        test.setData("Adam madA", "Mgła we mgle", "średnia ocen 5/5","","");
         
         test.setPreferredSize(pSize);
         test.setMinimumSize(pSize);

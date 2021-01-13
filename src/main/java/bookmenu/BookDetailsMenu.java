@@ -6,8 +6,11 @@ import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -23,6 +26,8 @@ public class BookDetailsMenu extends JPanel{
   private Dimension pSize = new Dimension(100, 100);
   public JScrollPane scrollablePanel;
   JTextField reviewText;
+  JTextField reviewScore;
+  Label reviewReturn;
   Button publishReviewButton;
   Button addToCart;
   /*
@@ -57,7 +62,7 @@ public class BookDetailsMenu extends JPanel{
     });
     bookPanel.add(addToCart, BorderLayout.EAST);
     
-    //Panel na recenzje
+    //Panel do napisania recenzji
     JPanel pom = new JPanel();
     pom.setPreferredSize(pSize);
     pom.setLayout(new BorderLayout());
@@ -66,19 +71,36 @@ public class BookDetailsMenu extends JPanel{
     publishReviewButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-          System.out.println("Publish review button has been clicked");
+          //System.out.println("Publish review button has been clicked");
           //Dodaj do bazy danych recenzje (jesli spelnia wymagania dot ilosci znakow)
           //To do
           //Odswiez recenzje
+          publishReview();
           refreshReviews();
+      }
+
+      private void publishReview() {
+        try {
+          int iduzytkownika = 1; //TRZEBA ZMIENIC
+          System.out.println("INSERT INTO recenzje VALUES ("+Integer.toString(iduzytkownika)+","+Integer.toString(id)+","+Integer.parseInt(reviewScore.getText())+",'"+reviewText.getText()+"')");
+          Adapter.execute("INSERT INTO recenzje VALUES ("+Integer.toString(iduzytkownika)+","+Integer.toString(id)+","+Integer.parseInt(reviewScore.getText())+",'"+reviewText.getText()+"')");
+        } catch (Exception e) {
+          reviewReturn.setText("Sprawdz konsole bo jakis blad");
+          e.printStackTrace();
+        }
+        
       }
     });
     
     pom.add(publishReviewButton,BorderLayout.EAST);
     reviewText = new JTextField("Tu wpisz swoją recenzję książki");
     pom.add(reviewText,BorderLayout.CENTER);
+    reviewReturn=new Label("Odpowiedz w spr. inserta");
+    pom.add(reviewReturn,BorderLayout.SOUTH);
+    reviewScore=new JTextField("1-5");
+    pom.add(reviewScore,BorderLayout.WEST);
+
     this.add(pom, BorderLayout.PAGE_END);
-    
     //Create list of object(recenzja)
     list = new JPanel();
     list.setVisible(true);
@@ -92,14 +114,35 @@ public class BookDetailsMenu extends JPanel{
     scrollablePanel.setPreferredSize(new Dimension(400,300));
     this.add(scrollablePanel, BorderLayout.CENTER);
     
-    generateList(); // do usunięcia
     addReviews(id);
   }
   /*
    * Zapytanie baze danych o informacje o książce
    */
   private void setBookInfo(int id) {
-    bookPanel.setData("NAZWA", "AUTOR", "Srednia ocena 0/5"); // remove this later
+      try {
+        ResultSet rs = Adapter.execute(
+        "SELECT ksiazki.id,tytul,cena,ilosc,imie,nazwisko,nazwa,AVG(iloscgwiazdek) AS sredniaOcena,kategorie.nazwa as kategoria FROM ksiazki" +
+        " JOIN autorzy" +
+        " JOIN kategorie" +
+        " LEFT JOIN recenzje ON ksiazki.id=recenzje.id_ksiazka" +
+        " WHERE " +
+        " autorzy.id = ksiazki.autor AND" +
+        " kategorie.id = ksiazki.kategoria AND" +
+        " ksiazki.id =" + id +
+        " GROUP BY ksiazki.id LIMIT 1");
+        // :)
+        rs.next();
+        Float cena = rs.getFloat("cena");
+        String tytul = rs.getString("tytul");
+        String kategoria = rs.getString("kategoria");
+        String autor = rs.getString("imie") + " " + rs.getString("nazwisko");
+        Float ocena = rs.getFloat("sredniaOcena");
+        bookPanel.setData(tytul, autor, ocena.toString(), kategoria, cena.toString());
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
   }
 
   /*
@@ -107,16 +150,29 @@ public class BookDetailsMenu extends JPanel{
    * Wzor w addReviews lub generateList
    */
   private void addReviews(int id) {
-//    ReviewPanel test = new ReviewPanel();
-//    
-//    test.setPreferredSize(pSize);
-//    test.setMinimumSize(pSize);
-//    test.setData(name,text,rating);
-//    
-//    test.setPreferredSize(pSize);
-//    test.setMinimumSize(pSize);
-//    
-//    list.add(test);
+    
+    try {
+      ResultSet rs = Adapter.execute(
+      "SELECT uzytkownicy.nazwa AS nazwa,iloscGwiazdek,tekstowaRecenzja FROM ksiazki" +
+      " JOIN uzytkownicy" +
+      " LEFT JOIN recenzje ON ksiazki.id=recenzje.id_ksiazka" +
+      " WHERE " +
+      " ksiazki.id =" + id +
+      " AND id_uzytkownik=uzytkownicy.id"
+      );
+      // :)
+      while(rs.next()) {
+        String name = rs.getString("nazwa");
+        int gwiazdki = rs.getInt("iloscGwiazdek");
+        String tekst = rs.getString("tekstowaRecenzja");
+        ReviewPanel rp = new ReviewPanel(this,Adapter.getRole()>0);
+        rp.setData(name, tekst, Integer.toString(gwiazdki));
+        list.add(rp);
+      }
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
     scrollablePanel.revalidate();
     scrollablePanel.repaint();
@@ -127,29 +183,11 @@ public class BookDetailsMenu extends JPanel{
     addReviews(id);
   }
   /*
-   * Może byc potrzebne do aktualizacji po dodaniu swojej recenzji, ale tak to useless
+   * Potrzebne do aktualizacji po dodaniu swojej recenzji
    */
   private void removeAllListedItems() {
     list.removeAll();
-    /*
-     * Nwm czy potrzebne ale nie zaszkodzi
-     */
     scrollablePanel.revalidate();
     scrollablePanel.repaint();
   }
-  /*
-   *  Generacja random rzeczy żeby coś było widac
-   */
-  private void generateList() {
-    for(int i=0;i<25;i++) {
-        ReviewPanel test = new ReviewPanel(this, Adapter.getRole() > 0);
-        test.setData("Wojciech Maziarz", "Git polecam każdemu", "5");
-        
-        test.setPreferredSize(pSize);
-        test.setMinimumSize(pSize);
-        list.add(test);
-        //test.setData("TITLE_" + i,"AUTHOR_"+i,"10/"+i);
-    }
-  }
-
 }

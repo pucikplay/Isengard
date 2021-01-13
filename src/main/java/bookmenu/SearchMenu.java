@@ -8,9 +8,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -22,7 +25,6 @@ import javax.swing.JTextField;
 public class SearchMenu extends JPanel{
   
   public SearchPanel searchPanel;
-  public JPanel topPanel;
   public JPanel list;
   private Dimension pSize = new Dimension(100, 100);
   public JScrollPane scrollablePanel;
@@ -44,7 +46,7 @@ public class SearchMenu extends JPanel{
       @Override
       public void actionPerformed(ActionEvent e) {
           System.out.println("Search button has been clicked");
-          searchButtonClicked();
+          generateList(false);
       }
     });
     this.add(searchPanel, BorderLayout.PAGE_START);
@@ -62,14 +64,16 @@ public class SearchMenu extends JPanel{
     scrollablePanel.setPreferredSize(new Dimension(400,300));
     this.add(scrollablePanel, BorderLayout.CENTER);
     
-    generateList();
+    generateList(true);
   }
   /*
    * Wewnetrzna klasa panela wyszukiwującego
    */
   class SearchPanel extends JPanel{
     
-    private JTextField textField;
+    private JTextField titleField;
+    private JTextField authorField;
+    private JTextField categoryField;
     private JComboBox<String> ratingSort;
     private JComboBox<String> priceSort;
     
@@ -81,15 +85,12 @@ public class SearchMenu extends JPanel{
       this.setPreferredSize(pSize);
       this.setMinimumSize(pSize);
       
-      this.setLayout(new GridBagLayout());
+      this.setLayout(new GridLayout(2,5));
       
       this.init();
     }
 
     private void init() {
-      textField = new JTextField();
-      this.add(textField);
-      textField.setPreferredSize(new Dimension(400,25));
 
       String[] sortOptions = {"brak","Rosnąco","Malejąco"};
       //Ocena
@@ -100,33 +101,49 @@ public class SearchMenu extends JPanel{
       this.add(new Label("Sortuj cenę"));
       priceSort = new JComboBox<String>(sortOptions);
       this.add(priceSort);
+      
+      this.add(new Label("Tytul"));
+      titleField = new JTextField();
+      this.add(titleField);
+      this.add(new Label("Autor"));
+      authorField = new JTextField();
+      this.add(authorField);
+      this.add(new Label("Kategoria"));
+      categoryField = new JTextField();
+      this.add(categoryField);
+      
+      titleField.setPreferredSize(new Dimension(200,25));
+      authorField.setPreferredSize(new Dimension(200,25));
+      categoryField.setPreferredSize(new Dimension(200,25));
     }
     
     public String getNameSearch() {
-      return textField.getText();
+      return titleField.getText();
     }
-    public String getPriceSort() {
-      return (String) priceSort.getSelectedItem();
+    public String getAuthorSearch() {
+      return authorField.getText();
     }
-    public String getRatingSort() {
-      return (String) ratingSort.getSelectedItem();
+    public String getCategorySearch() {
+      return categoryField.getText();
     }
-  }
-  
-  public void addBook(int id,String name,String author,String rating) {
-    BookPanel test = new BookPanel(id, true);
-    
-    test.setPreferredSize(pSize);
-    test.setMinimumSize(pSize);
-    test.setData(name,author,rating);
-    
-    test.setPreferredSize(pSize);
-    test.setMinimumSize(pSize);
-    
-    list.add(test);
-
-    scrollablePanel.revalidate();
-    scrollablePanel.repaint();
+    public int getPriceSort() {
+      if(priceSort.getSelectedItem().toString()=="Rosnąco") {
+        return 1;
+      }
+      if(priceSort.getSelectedItem().toString()=="Malejąco") {
+        return -1;
+      }
+      return 0;
+    }
+    public int getRatingSort() {
+      if(ratingSort.getSelectedItem().toString()=="Rosnąco") {
+        return 1;
+      }
+      if(ratingSort.getSelectedItem().toString()=="Malejąco") {
+        return -1;
+      }
+      return 0;
+    }
   }
   
   public void removeAllListedItems() {
@@ -138,35 +155,54 @@ public class SearchMenu extends JPanel{
     scrollablePanel.repaint();
   }
 
-  protected void searchButtonClicked() {
-    removeAllListedItems();
-    /*
-     * Delete
-     */
-    this.addBook(0,"a","a","a");
-    this.addBook(1,"a","a","a");
-    this.addBook(2,"a","a","a");
-    this.addBook(3,"a","a","a");
-    this.addBook(4,"a","a","a");
-    /*
-     * Zapytanie do bazy o książki spełniające kryteria wpisane w SearchPanel
-     * a następnie iterując się dodajemy do metodą addBook
-     */
-    this.searchPanel.getRatingSort();
-    this.searchPanel.getPriceSort();
-  }
   /*
    *  Generacja random rzeczy żeby coś było widac
    */
-  private void generateList() {
-    for(int i=0;i<25;i++) {
-      BookPanel test = new BookPanel(i,true);
-      
-      test.setPreferredSize(pSize);
-      test.setMinimumSize(pSize);
-      list.add(test);
-      test.setData("TITLE_" + i,"AUTHOR_"+i,"10/"+i);
+  private void generateList(boolean justOpened) {
+    removeAllListedItems();
+    try {
+      ResultSet rs;
+      if(justOpened) {
+        rs = Adapter.execute("CALL GetSearchResults('','','',0,0)");
+      }else {
+        //System.out.println("CALL GetSearchResults('" + searchPanel.getNameSearch() + "','" + searchPanel.getAuthorSearch() +  "','" + searchPanel.getCategorySearch() +"',0,0)");
+        rs = Adapter.execute("CALL GetSearchResults('" + searchPanel.getNameSearch() + "','" + searchPanel.getAuthorSearch() +  "','" + searchPanel.getCategorySearch() +"',"+searchPanel.getPriceSort()+","+searchPanel.getRatingSort()+")");
+      }
+      while(rs.next()) {
+        int id = rs.getInt("id");
+        Float cena = rs.getFloat("cena");
+        String tytul = rs.getString("tytul");
+        String kategoria = rs.getString("kategoria");
+        String autor = rs.getString("imie") + " " + rs.getString("nazwisko");
+        Float ocena = rs.getFloat("sredniaOcena");
+        //Ocena i cena do wyswietlenia
+        String ocenaString;
+        if(ocena==0) {
+          ocenaString = "Brak ocen uzytkownikow";
+        }else {
+          ocenaString = Float.toString(ocena);
+        }
+        String cenaString = cena.toString();
+        //Tworzenie
+        BookPanel test = new BookPanel(id,true);
+        test.setPreferredSize(pSize);
+        test.setMinimumSize(pSize);
+        test.setData(tytul,autor,ocenaString,kategoria,cenaString);
+        list.add(test);
+      }
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
+    //Skalowanie wygląda tragicznie jest jest mało obiektów 
+    // I tak nie działa.......
+//    JPanel test = new JPanel();
+//    test.setPreferredSize(pSize);
+//    test.setMinimumSize(pSize);
+//    list.add(test);
+//
+//    scrollablePanel.revalidate();
+//    scrollablePanel.repaint();
   }
 
 }
