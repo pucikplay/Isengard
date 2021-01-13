@@ -71,7 +71,7 @@ CREATE TABLE zamowienia
 	id_uzytkownik INT NOT NULL,
 	stan_zamowienia VARCHAR(90) NOT NULL,
 	adres VARCHAR(270) NOT NULL,
-	koszt INT NOT NULL,
+	koszt FLOAT NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -79,8 +79,8 @@ CREATE TABLE zamowienia
 ###TABELA Produkty zamowien?
 CREATE TABLE produktyZamowien
 (
-	id_zamowienia INT NOT NULL,
-	id_ksiazki INT NOT NULL
+	id_zamowienie INT NOT NULL,
+	id_ksiazka INT NOT NULL
 );
 
 #Klucze obce
@@ -103,6 +103,6 @@ ALTER TABLE zamowienia ADD CONSTRAINT FK_ZamowieniaUzytkownik FOREIGN KEY (id_uz
 ##produktZamowien
 
 ###Produkt zamowienia -> Zamowienie
-ALTER TABLE produktyZamowien ADD CONSTRAINT FK_ElementZamowienia FOREIGN KEY (id_zamowienia) REFERENCES zamowienia(id);
+ALTER TABLE produktyZamowien ADD CONSTRAINT FK_ElementZamowienia FOREIGN KEY (id_zamowienie) REFERENCES zamowienia(id);
 ###Produkt zamowienia -> Ksiazka
-ALTER TABLE produktyZamowien ADD CONSTRAINT FK_ElementKsiazka FOREIGN KEY (id_ksiazki) REFERENCES ksiazki(id);
+ALTER TABLE produktyZamowien ADD CONSTRAINT FK_ElementKsiazka FOREIGN KEY (id_ksiazka) REFERENCES ksiazki(id);
