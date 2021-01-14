@@ -174,6 +174,7 @@ public class SearchMenu extends JPanel{
         String tytul = rs.getString("tytul");
         String kategoria = rs.getString("kategoria");
         String autor = rs.getString("imie") + " " + rs.getString("nazwisko");
+        int ilosc = rs.getInt("ilosc");
         Float ocena = rs.getFloat("sredniaOcena");
         //Ocena i cena do wyswietlenia
         String ocenaString;
@@ -187,7 +188,7 @@ public class SearchMenu extends JPanel{
         BookPanel test = new BookPanel(id,true);
         test.setPreferredSize(pSize);
         test.setMinimumSize(pSize);
-        test.setData(tytul,autor,ocenaString,kategoria,cenaString);
+        test.setData(tytul,autor,ocenaString,kategoria,cenaString,Integer.toString(ilosc));
         list.add(test);
       }
     } catch (SQLException e) {

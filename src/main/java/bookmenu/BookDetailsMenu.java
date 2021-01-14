@@ -139,7 +139,8 @@ public class BookDetailsMenu extends JPanel{
         String kategoria = rs.getString("kategoria");
         String autor = rs.getString("imie") + " " + rs.getString("nazwisko");
         Float ocena = rs.getFloat("sredniaOcena");
-        bookPanel.setData(tytul, autor, ocena.toString(), kategoria, cena.toString());
+        int ilosc = rs.getInt("ilosc");
+        bookPanel.setData(tytul, autor, ocena.toString(), kategoria, cena.toString(), Integer.toString(ilosc));
       } catch (SQLException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

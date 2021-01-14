@@ -22,6 +22,7 @@ public class BookPanel extends JPanel{
   public Label author;
   public Button button;
   public Label rating;
+  public Label count;
   public Label cena;
   public Label kategoria;
   
@@ -30,12 +31,13 @@ public class BookPanel extends JPanel{
     initPanel(showDetailsButton);
   }
   
-  public void setData(String name,String author,String rating,String kategoria,String cena) {
+  public void setData(String name,String author,String rating,String kategoria,String cena,String ilosc) {
     this.name.setText("Tytuł: "+name);
     this.author.setText("Autor: "+author);
     this.rating.setText("Średnia ocena: "+rating);
     this.kategoria.setText("Kategoria: "+kategoria);
     this.cena.setText("Cena: "+cena + " zł");
+    this.count.setText("Dostepne sztuki: " + ilosc);
   }
   
   private void initPanel(boolean showDetailsButton) {
@@ -61,6 +63,10 @@ public class BookPanel extends JPanel{
     rating = new Label("Ocenka może byc/git");
     rating.setFont(new Font("Verdana", Font.PLAIN, 15));
     this.add(rating, BorderLayout.CENTER);
+    //Number of books available
+    count = new Label("Ilosc sztuk");
+    count.setFont(new Font("Verdana", Font.PLAIN, 15));
+    this.add(count, BorderLayout.CENTER);
     
     //Przycisk
     if(showDetailsButton) {

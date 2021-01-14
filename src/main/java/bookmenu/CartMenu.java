@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -52,7 +53,6 @@ public class CartMenu extends JPanel{
       public void actionPerformed(ActionEvent e) {
           System.out.println("Order button has been clicked");
           //Zamow i jesli udane wyczysc koszyk
-          returnValue.setText("Niewystarczaja ilosc srodkow");
           orderButtonPressed();
       }
     });
@@ -116,17 +116,35 @@ public class CartMenu extends JPanel{
     }
     //CALL CreateNewOrder(2,"Ulica sezamkowa");
     try {
+      Adapter.connection.setAutoCommit(false);
       ResultSet rs = Adapter.execute("CALL CreateNewOrder("+1+",'"+Adres.getText()+"')"); ///////////////////////////////////////////////////////////////TU ZMIENIC ID
+//      ResultSet rs = Adapter.execute("SELECT AUTO_INCREMENT AS id" +
+//      " FROM information_schema.TABLES" +
+//      " WHERE TABLE_SCHEMA = 'isengardbookdb'" +
+//      " AND TABLE_NAME = 'zamowienia'");
       rs.next();
       int orderId = rs.getInt("id");
+//      
+//      Adapter.execute("INSERT INTO zamowienia (id_uzytkownik,stan_zamowienia,adres,koszt) VALUES (" + 1 + ",'Zamowione','"+Adres.getText()+"',0)");
+      
       for(int i=0;i<Cart.listOfItems.size();i++) {
-        rs = Adapter.execute("CALL AddToOrder("+1+","+orderId+","+Cart.listOfItems.get(i)+")"); //tu tezx
+        ResultSet rs2 = Adapter.execute("CALL AddToOrder("+1+","+orderId+","+Cart.listOfItems.get(i)+")"); //tu tez
+        rs2.next();
+        int result = rs2.getInt("result");
+        if(result==0) {
+          returnValue.setText("Jedna z ksiazek jest aktualnie nie dostepna w sklepie");
+          System.out.println("tutaj rollback");
+          Adapter.connection.rollback();
+          return;
+        }
       }
+      //Tu juz sie wszystko udalo
       removeAllListedItems();
       stanKonta.setText("Stan konta: " + Float.toString(getStanKonta()));
       returnValue.setText("Zamowiono pomyslnie");
+      Adapter.connection.commit();
+      Adapter.connection.setAutoCommit(true);
     } catch (SQLException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -160,9 +178,10 @@ public class CartMenu extends JPanel{
           Float cena = rs.getFloat("cena");
           String tytul = rs.getString("tytul");
           String kategoria = rs.getString("kategoria");
+          int ilosc = rs.getInt("ilosc");
           String autor = rs.getString("imie") + " " + rs.getString("nazwisko");
           Float ocena = rs.getFloat("sredniaOcena");
-          test.setData(tytul, autor, ocena.toString(), kategoria, cena.toString());
+          test.setData(tytul, autor, ocena.toString(), kategoria, cena.toString(),Integer.toString(ilosc));
           test.setPreferredSize(pSize);
           test.setMinimumSize(pSize);
           
