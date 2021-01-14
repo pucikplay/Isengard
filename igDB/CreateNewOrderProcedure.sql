@@ -6,8 +6,9 @@ BEGIN
 	FROM information_schema.TABLES
 	WHERE TABLE_SCHEMA = "isengardbookdb"
 	AND TABLE_NAME = "zamowienia";
+	
 	INSERT INTO zamowienia (id_uzytkownik,stan_zamowienia,adres,koszt)
 	VALUES (idUzytkownika,'Zamowione',podanyAdres,0);
 END //
 DELIMITER ;
-CALL CreateNewOrder(2,"Ulica sezamkowa");
+#CALL CreateNewOrder(2,"Ulica sezamkowa");
