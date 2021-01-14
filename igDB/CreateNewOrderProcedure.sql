@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS CreateNewOrder;
 DELIMITER //
 CREATE PROCEDURE CreateNewOrder (IN idUzytkownika INT,IN podanyAdres VARCHAR(120))
 BEGIN
-	SELECT AUTO_INCREMENT
+	SELECT AUTO_INCREMENT AS id
 	FROM information_schema.TABLES
 	WHERE TABLE_SCHEMA = "isengardbookdb"
 	AND TABLE_NAME = "zamowienia";
