@@ -6,7 +6,7 @@ public class Adapter {
 
     private static int role;
 
-    static Connection connection;
+    public static Connection connection;
 
     static {
         try {
@@ -80,9 +80,9 @@ public class Adapter {
     }
 
     public static ResultSet execute(String text) throws SQLException {
-        connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", "root", "root");
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(text);
-        return rs;
+      //connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", "root", "root");
+      Statement statement = connection.createStatement();
+      ResultSet rs = statement.executeQuery(text);
+      return rs;
     }
 }
