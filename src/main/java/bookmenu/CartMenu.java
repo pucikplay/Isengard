@@ -6,12 +6,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+import isengard.db.Adapter;
 
 public class CartMenu extends JPanel{
   
@@ -24,7 +28,8 @@ public class CartMenu extends JPanel{
   JTextField Adres;
   Button orderButton;
   JLabel returnValue;
-
+  JLabel stanKonta;
+  private float koszt;
   public CartMenu() {
     initBookPanel();
   }
@@ -48,6 +53,7 @@ public class CartMenu extends JPanel{
           System.out.println("Order button has been clicked");
           //Zamow i jesli udane wyczysc koszyk
           returnValue.setText("Niewystarczaja ilosc srodkow");
+          orderButtonPressed();
       }
     });
     topPanel.add(orderButton, BorderLayout.EAST);
@@ -60,6 +66,9 @@ public class CartMenu extends JPanel{
     //Wyswietlenie wiadomosci zwrotnej
     returnValue = new JLabel("Wiadomosc zwrotna: ");
     topPanel.add(returnValue,BorderLayout.SOUTH);
+    //Wyswietlenie stanu konta
+    stanKonta = new JLabel("Stan konta: " + getStanKonta());
+    topPanel.add(stanKonta,BorderLayout.WEST);
     //Panel na zamowione ksiazki
     JPanel pom = new JPanel();
     pom.setPreferredSize(pSize);
@@ -77,8 +86,49 @@ public class CartMenu extends JPanel{
     scrollablePanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     scrollablePanel.setPreferredSize(new Dimension(400,300));
     this.add(scrollablePanel, BorderLayout.CENTER);
-    
-    generateList(); // do usunięcia
+    generateCartList();
+  }
+
+  private Float getStanKonta() {
+    ResultSet rs;
+    try {
+      rs = Adapter.execute(
+          "SELECT id,stanKonta FROM uzytkownicy" +
+          " WHERE " +
+          " id = " + 1 + " LIMIT 1"); ///////////////////////////////////////////////////////////////TU ZMIENIC ID
+      rs.next();
+      Float stanKonta = rs.getFloat("stanKonta");
+      return stanKonta;
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      return 0f;
+    }
+  }
+
+  private void orderButtonPressed() {
+    // TODO Auto-generated method stub
+    Float aktStanKonta = getStanKonta();
+    if(aktStanKonta < koszt) {
+      System.out.println(stanKonta + "    " + koszt);
+      returnValue.setText("Niewystarczająca ilosc funduszy");
+      return;
+    }
+    //CALL CreateNewOrder(2,"Ulica sezamkowa");
+    try {
+      ResultSet rs = Adapter.execute("CALL CreateNewOrder("+1+",'"+Adres.getText()+"')"); ///////////////////////////////////////////////////////////////TU ZMIENIC ID
+      rs.next();
+      int orderId = rs.getInt("id");
+      for(int i=0;i<Cart.listOfItems.size();i++) {
+        rs = Adapter.execute("CALL AddToOrder("+1+","+orderId+","+Cart.listOfItems.get(i)+")"); //tu tezx
+      }
+      removeAllListedItems();
+      stanKonta.setText("Stan konta: " + Float.toString(getStanKonta()));
+      returnValue.setText("Zamowiono pomyslnie");
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   private void removeAllListedItems() {
@@ -86,27 +136,50 @@ public class CartMenu extends JPanel{
     scrollablePanel.revalidate();
     scrollablePanel.repaint();
   }
-  private void generateCartList() {
-    int koszt = 0;
+  public void generateCartList() {
+    removeAllListedItems();
+    koszt = 0;
     /*
      * Bierze id książek w jakiejś liście i bierze info od bazy danych
      * aktualizuje cenę 
      */
-    kosztText.setText("Całkowity koszt: " + koszt);
-  }
-  /*
-   *  Generacja random rzeczy żeby coś było widac
-   */
-  private void generateList() {
-    for(int i=0;i<5;i++) {
-        BookPanel test = new BookPanel(i,true);
-        test.setData("Adam madA", "Mgła we mgle", "średnia ocen 5/5","","");
-        
-        test.setPreferredSize(pSize);
-        test.setMinimumSize(pSize);
-        list.add(test);
-        //test.setData("TITLE_" + i,"AUTHOR_"+i,"10/"+i);
+    try {
+      for(int i=0;i<Cart.listOfItems.size();i++) {
+        BookPanel test = new BookPanel(Cart.listOfItems.get(i),false);
+        ResultSet rs = Adapter.execute(
+            "SELECT ksiazki.id,tytul,cena,ilosc,imie,nazwisko,nazwa,AVG(iloscgwiazdek) AS sredniaOcena,kategorie.nazwa as kategoria FROM ksiazki" +
+            " JOIN autorzy" +
+            " JOIN kategorie" +
+            " LEFT JOIN recenzje ON ksiazki.id=recenzje.id_ksiazka" +
+            " WHERE " +
+            " autorzy.id = ksiazki.autor AND" +
+            " kategorie.id = ksiazki.kategoria AND" +
+            " ksiazki.id =" + Cart.listOfItems.get(i) +
+            " GROUP BY ksiazki.id LIMIT 1");
+          rs.next();
+          Float cena = rs.getFloat("cena");
+          String tytul = rs.getString("tytul");
+          String kategoria = rs.getString("kategoria");
+          String autor = rs.getString("imie") + " " + rs.getString("nazwisko");
+          Float ocena = rs.getFloat("sredniaOcena");
+          test.setData(tytul, autor, ocena.toString(), kategoria, cena.toString());
+          test.setPreferredSize(pSize);
+          test.setMinimumSize(pSize);
+          
+          //Dodanie przycisku do usunięcia z koszyka #Dobry styl programowania
+          DeleteFromCartButton b = new DeleteFromCartButton("Usun z koszyka",i,this); 
+          test.add(b);
+          
+          list.add(test);
+          koszt = koszt + cena;
+      }
+      kosztText.setText("Całkowity koszt: "+Float.toString(koszt)+" zł");
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
+    
+    kosztText.setText("Całkowity koszt: " + koszt);
   }
 
 }

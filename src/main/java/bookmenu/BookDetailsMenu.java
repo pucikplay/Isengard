@@ -57,7 +57,7 @@ public class BookDetailsMenu extends JPanel{
       @Override
       public void actionPerformed(ActionEvent e) {
           System.out.println("Add to cart button has been clicked");
-          //Dodaj do koszyka id ksiazki
+          Cart.addItem(id);
       }
     });
     bookPanel.add(addToCart, BorderLayout.EAST);
