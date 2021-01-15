@@ -66,11 +66,11 @@ public class Adapter {
             statement.executeQuery();
 
 
-            statement = connection.prepareStatement("GRANT SELECT ON isengardbookdb.* TO ?;");
+            statement = connection.prepareStatement("GRANT SELECT, EXECUTE ON isengardbookdb.* TO ?;");
             statement.setString(1, log);
             statement.executeQuery();
 
-            statement = connection.prepareStatement("GRANT UPDATE ON isengardbookdb.recenzje TO ?;");
+            statement = connection.prepareStatement("GRANT INSERT ON isengardbookdb.recenzje TO ?;");
             statement.setString(1, log);
             statement.executeQuery();
 
