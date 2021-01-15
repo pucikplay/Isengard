@@ -83,4 +83,7 @@ public class BookPanel extends JPanel{
     }
   }
 
+  public void hideAvailableBooks() {
+    count.setText("");
+  }
 }
