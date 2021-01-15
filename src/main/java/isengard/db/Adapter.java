@@ -1,13 +1,19 @@
 package isengard.db;
 
+import java.io.File;
 import java.sql.*;
+
+import javax.swing.JFileChooser;
 
 public class Adapter {
 
     private static int role;
-
+    
     private static int id;
 
+    private static String login;
+    private static String password;
+    
     public static Connection connection;
 
     static {
@@ -26,6 +32,8 @@ public class Adapter {
                 if (rs.getString(3).equals(pass)) {
                     id = rs.getInt(1);
                     role = rs.getInt(4);
+                    Adapter.login = login;
+                    Adapter.password = pass;
                     System.out.println(role);
                     connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", login, pass);
                     return true;
@@ -44,7 +52,67 @@ public class Adapter {
     }
 
     public static void backup() {
+      JFileChooser chooser = new JFileChooser();
+      int choice = chooser.showSaveDialog(chooser);
+      //int choice = chooser.showOpenDialog(chooser); //to open
+      File fileToSave;
+      if (choice == JFileChooser.APPROVE_OPTION) {
+        fileToSave = chooser.getSelectedFile();
+        System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+      }else {
+        return;
+      }
+      
+      Process p = null;
+      try {
+          Runtime runtime = Runtime.getRuntime();
+          p = runtime.exec("mysqldump -u"+login+" -p"+password+" --add-drop-database -B isengardbookdb -r " + fileToSave.getAbsolutePath() + "backup" + ".sql");
+//change the dbpass and dbname with your dbpass and dbname
+          int processComplete = p.waitFor();
 
+          if (processComplete == 0) {
+
+              System.out.println("Backup created successfully!");
+
+          } else {
+            System.out.println("Could not create the backup");
+          }
+
+
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+    }
+    
+    public static void restore() {
+      JFileChooser chooser = new JFileChooser();
+      //int choice = chooser.showSaveDialog(chooser);
+      int choice = chooser.showOpenDialog(chooser); //to open
+      File fileToSave;
+      if (choice == JFileChooser.APPROVE_OPTION) {
+        fileToSave = chooser.getSelectedFile();
+        System.out.println("Restore as: " + fileToSave.getAbsolutePath());
+      }else {
+        return;
+      }
+      
+      
+      String[] restoreCmd = new String[]{"mysql ", "--user=" + login, "--password=" + "root", "-e", "source " + fileToSave};
+      
+      Process runtimeProcess;
+      try {
+
+          runtimeProcess = Runtime.getRuntime().exec(restoreCmd);
+          int processComplete = runtimeProcess.waitFor();
+
+          if (processComplete == 0) {
+              System.out.println("Restored successfully!");
+          } else {
+              System.out.println("Could not restore the backup!");
+          }
+      } catch (Exception ex) {
+          ex.printStackTrace();
+      }
     }
 
 

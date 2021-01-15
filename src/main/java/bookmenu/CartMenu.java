@@ -90,23 +90,28 @@ public class CartMenu extends JPanel{
   }
 
   private Float getStanKonta() {
+    int iduserDB = Adapter.getId();
     ResultSet rs;
     try {
       rs = Adapter.execute(
           "SELECT id,stanKonta FROM uzytkownicy" +
           " WHERE " +
-          " id = " + 1 + " LIMIT 1"); ///////////////////////////////////////////////////////////////TU ZMIENIC ID
+          " id = " + iduserDB + " LIMIT 1");
       rs.next();
       Float stanKonta = rs.getFloat("stanKonta");
       return stanKonta;
     } catch (SQLException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
       return 0f;
     }
   }
 
   private void orderButtonPressed() {
+    if(!Adres.getText().matches("[a-zA-Z0-9]+")) {
+      returnValue.setText("Niepoprawne znaki w adresie");
+      return;
+    }
+    int iduserDB = Adapter.getId();
     // TODO Auto-generated method stub
     Float aktStanKonta = getStanKonta();
     if(aktStanKonta < koszt) {
@@ -117,18 +122,13 @@ public class CartMenu extends JPanel{
     //CALL CreateNewOrder(2,"Ulica sezamkowa");
     try {
       Adapter.connection.setAutoCommit(false);
-      ResultSet rs = Adapter.execute("CALL CreateNewOrder("+1+",'"+Adres.getText()+"')"); ///////////////////////////////////////////////////////////////TU ZMIENIC ID
-//      ResultSet rs = Adapter.execute("SELECT AUTO_INCREMENT AS id" +
-//      " FROM information_schema.TABLES" +
-//      " WHERE TABLE_SCHEMA = 'isengardbookdb'" +
-//      " AND TABLE_NAME = 'zamowienia'");
+      ResultSet rs = Adapter.execute("CALL CreateNewOrder("+Integer.toString(iduserDB)+",'"+Adres.getText()+"')");
       rs.next();
       int orderId = rs.getInt("id");
 //      
-//      Adapter.execute("INSERT INTO zamowienia (id_uzytkownik,stan_zamowienia,adres,koszt) VALUES (" + 1 + ",'Zamowione','"+Adres.getText()+"',0)");
       
       for(int i=0;i<Cart.listOfItems.size();i++) {
-        ResultSet rs2 = Adapter.execute("CALL AddToOrder("+1+","+orderId+","+Cart.listOfItems.get(i)+")"); //tu tez
+        ResultSet rs2 = Adapter.execute("CALL AddToOrder("+iduserDB+","+orderId+","+Cart.listOfItems.get(i)+")");
         rs2.next();
         int result = rs2.getInt("result");
         if(result==0) {

@@ -5,19 +5,18 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import bookmenu.OrderMenu;
-import isengard.io.NewWindow;
+import isengard.db.Adapter;
 
-public class OrdersButton extends JButton {
+public class RestoreButton extends JButton {
 
-  public OrdersButton() {
-      this.setText("Orders");
+  public RestoreButton() {
+      this.setText("Restore");
 
       this.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-              new NewWindow(new OrderMenu(), "OrderMenu");
-              System.out.println("Order button has been clicked");
+              Adapter.restore();
+              System.out.println("Backup button has been clicked");
           }
       });
   }

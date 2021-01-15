@@ -5,6 +5,7 @@ import isengard.db.Adapter;
 import isengard.io.buttons.BackupButton;
 import isengard.io.buttons.CartButton;
 import isengard.io.buttons.OrdersButton;
+import isengard.io.buttons.RestoreButton;
 import isengard.io.buttons.ReviewButton;
 import isengard.io.buttons.SearchButton;
 
@@ -52,7 +53,7 @@ public class Window extends JFrame{
 
         CartButton cartButton = new CartButton();
         SearchButton searchButton = new SearchButton();
-        ReviewButton reviewButton = new ReviewButton();
+        //ReviewButton reviewButton = new ReviewButton();
         OrdersButton orderButton = new OrdersButton();
         panel.add(cartButton);
         panel.add(searchButton);
@@ -61,6 +62,7 @@ public class Window extends JFrame{
 
         if (role == 2) {
             BackupButton backupButton = new BackupButton();
+            RestoreButton restoreButton = new RestoreButton();
             final TextField console = new TextField();
             console.setColumns(25);
             JButton executeButton = new JButton("Execute");
@@ -75,6 +77,7 @@ public class Window extends JFrame{
                 }
             });
             panel.add(backupButton);
+            panel.add(restoreButton);
             panel.add(console);
             panel.add(executeButton);
         }

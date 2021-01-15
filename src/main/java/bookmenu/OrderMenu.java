@@ -71,7 +71,7 @@ public class OrderMenu extends JPanel{
     scrollablePanel.repaint();
   }
   public void generateCartList() {
-    int userid = 1;
+    int userid = Adapter.getId();
     int previousid = -1;
     try {
       ResultSet rs = Adapter.execute("SELECT * FROM zamowienia"

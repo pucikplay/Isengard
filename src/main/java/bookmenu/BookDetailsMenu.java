@@ -81,7 +81,11 @@ public class BookDetailsMenu extends JPanel{
 
       private void publishReview() {
         try {
-          int iduzytkownika = 1; //TRZEBA ZMIENIC
+          if(!reviewText.getText().matches("[a-zA-Z0-9]+")) {
+            reviewReturn.setText("Niepoprawne znaki");
+            return;
+          }
+          int iduzytkownika = Adapter.getId();
           System.out.println("INSERT INTO recenzje VALUES ("+Integer.toString(id)+","+Integer.toString(iduzytkownika)+","+Integer.parseInt(reviewScore.getText())+",'"+reviewText.getText()+"')");
           Adapter.execute("INSERT INTO recenzje VALUES ("+Integer.toString(id)+","+Integer.toString(iduzytkownika)+","+Integer.parseInt(reviewScore.getText())+",'"+reviewText.getText()+"')");
           reviewReturn.setText("Pomyslnie dodano recenzje");
