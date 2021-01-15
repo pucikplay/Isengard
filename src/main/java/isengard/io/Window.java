@@ -4,6 +4,7 @@ package isengard.io;
 import isengard.db.Adapter;
 import isengard.io.buttons.BackupButton;
 import isengard.io.buttons.CartButton;
+import isengard.io.buttons.OrdersButton;
 import isengard.io.buttons.ReviewButton;
 import isengard.io.buttons.SearchButton;
 
@@ -52,8 +53,10 @@ public class Window extends JFrame{
         CartButton cartButton = new CartButton();
         SearchButton searchButton = new SearchButton();
         ReviewButton reviewButton = new ReviewButton();
+        OrdersButton orderButton = new OrdersButton();
         panel.add(cartButton);
         panel.add(searchButton);
+        panel.add(orderButton);
         //panel.add(reviewButton);
 
         if (role == 2) {
