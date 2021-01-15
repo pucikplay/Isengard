@@ -6,6 +6,8 @@ public class Adapter {
 
     private static int role;
 
+    private static int id;
+
     public static Connection connection;
 
     static {
@@ -18,11 +20,12 @@ public class Adapter {
 
     public static boolean login(String login, String pass) throws SQLException {
         Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery("SELECT nazwa, haslo, rola FROM uzytkownicy");
+        ResultSet rs = statement.executeQuery("SELECT id, nazwa, haslo, rola FROM uzytkownicy");
         while (rs.next()) {
-            if (rs.getString(1).equals(login)) {
-                if (rs.getString(2).equals(pass)) {
-                    role = rs.getInt(3);
+            if (rs.getString(2).equals(login)) {
+                if (rs.getString(3).equals(pass)) {
+                    id = rs.getInt(1);
+                    role = rs.getInt(4);
                     System.out.println(role);
                     connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/isengardbookdb", login, pass);
                     return true;
@@ -34,6 +37,10 @@ public class Adapter {
 
     public static int getRole() {
         return role;
+    }
+
+    public static int getId() {
+        return id;
     }
 
     public static void backup() {
