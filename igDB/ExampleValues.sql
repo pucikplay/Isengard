@@ -16,7 +16,8 @@ VALUES
 INSERT INTO uzytkownicy (nazwa,haslo,rola,stanKonta)
 VALUES
 	("user1","abcd",0,0),
-	("user2","qwerty",1,0);
+	("user2","qwerty",1,0),
+	("root","root",2,0);
 	
 INSERT INTO recenzje (id_ksiazka,id_uzytkownik,iloscGwiazdek,tekstowaRecenzja)
 VALUES
