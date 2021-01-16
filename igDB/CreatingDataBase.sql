@@ -83,6 +83,14 @@ CREATE TABLE produktyZamowien
 	id_ksiazka INT NOT NULL
 );
 
+CREATE USER 'user1' IDENTIFIED BY 'abcd';
+GRANT SELECT, EXECUTE ON isengardbookdb.* TO user1;
+GRANT INSERT ON isengardbookdb.recenzje TO user1;
+
+CREATE USER 'user2' IDENTIFIED BY 'pass';
+GRANT SELECT, EXECUTE ON isengardbookdb.* TO user2;
+GRANT INSERT, DELETE ON isengardbookdb.recenzje TO user2;
+
 #Klucze obce
 
 ##KSIAZKI
